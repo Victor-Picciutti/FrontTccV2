@@ -42,14 +42,7 @@
                 </ul>
             </nav>
 
-            <div class="sidebar-footer">
-                <a href="configuracoes-Estudex.html" class="nav-item">
-                    <i class="fas fa-cog"></i> <span>Configurações</span>
-                </a>
-                <a href="login.html" class="nav-item logout">
-                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
-                </a>
-            </div>
+            
         </div>
 
         <!-- MAIN CONTENT -->
@@ -129,13 +122,17 @@
 
                     <!-- Botões de Ação -->
                     <div class="form-actions">
+                        <button type="button" id="btnConsultarAtividade" class="btn-primary">
+                            <i class="fas fa-save"></i> Minhas Atividades
+                        </button>
                         <button type="button" class="btn-secondary"
                             onclick="window.location.href='professor-atividades.html'">
                             <i class="fas fa-times"></i> Cancelar
                         </button>
-                        <button type="button" id="btnSalvarAtividade" class="btn-primary">
+                        <button type="button" onclick="window.location.href='atividadeCriar.html'" id="btnSalvarAtividade" class="btn-primary">
                             <i class="fas fa-save"></i> Criar Atividade
                         </button>
+                        
                     </div>
                 </div>
             </div>

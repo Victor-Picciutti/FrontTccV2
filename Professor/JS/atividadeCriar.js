@@ -1,135 +1,240 @@
+let atividadeId = null; // guarda o ID da atividade criada
+// array com letras das alternativas
 const LETRAS = ["A","B","C","D","E"];
+
+// contador de opções criadas
 let contador = 0;
+
+// controla qual questão está sendo criada
 let questaoAtual = 1;
+
+// total de questões da atividade
 const totalQuestoes = 10;
-const questoesSalvas = [];
 
+
+// ───────── UI ─────────
+
+// atualiza o contador de opções (ex: 2 / 5)
 function atualizarCount() {
-  document.getElementById("count-label").textContent = `${contador} / 5`;
-  document.querySelector(".btn-add").style.display = contador >= 5 ? "none" : "flex";
+  document.getElementById("count-label").textContent = `${contador} / 5`; // mostra quantidade
+  document.querySelector(".btn-add").style.display = contador >= 5 ? "none" : "flex"; // esconde botão se já tiver 5
 }
 
+// atualiza o texto "Questão X de Y" e barra de progresso
 function atualizarQuestaoHeader() {
-  document.getElementById("questao-numero").textContent = `Questão ${questaoAtual} de ${totalQuestoes}`;
-  document.getElementById("questao-progress").style.width = `${(questaoAtual / totalQuestoes) * 100}%`;
-
-  const btnSalvar = document.getElementById("btn-salvar");
-  if (questaoAtual === totalQuestoes) {
-    btnSalvar.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-      Finalizar Atividade
-    `;
-  } else {
-    btnSalvar.innerHTML = `
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-      Próxima Questão
-    `;
-  }
+  document.getElementById("questao-numero").textContent = `Questão ${questaoAtual} de ${totalQuestoes}`; // texto
+  document.getElementById("questao-progress").style.width = `${(questaoAtual / totalQuestoes) * 100}%`; // barra
 }
 
-function adicionarOpcao() {
-  if (contador >= 5) return;
-  const letra = LETRAS[contador];
-  contador++;
-  const container = document.getElementById("opcoes-container");
-  const row = document.createElement("div");
-  row.classList.add("opcao-row");
 
+// ───────── OPÇÕES ─────────
+
+// adiciona uma nova alternativa
+function adicionarOpcao() {
+
+  if (contador >= 5) return; // limita a 5 opções
+
+  const letra = LETRAS[contador]; // pega letra correspondente (A, B, C...)
+  contador++; // aumenta contador
+
+  const container = document.getElementById("opcoes-container"); // pega div das opções
+
+  const row = document.createElement("div"); // cria nova div
+  row.classList.add("opcao-row"); // adiciona classe
+
+  // HTML da opção
   row.innerHTML = `
-    <input type="radio" name="resposta" class="opcao-radio" title="Marcar como correta" />
-    <div class="opcao-letra">${letra}</div>
-    <input type="text" class="opcao-input" placeholder="Digite a alternativa ${letra}..." />
-    <button class="btn-remove" title="Remover" onclick="removerOpcao(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
-      </svg>
-    </button>
+    <input type="radio" name="resposta" class="opcao-radio" /> <!-- radio para marcar correta -->
+    <div class="opcao-letra">${letra}</div> <!-- letra da opção -->
+    <input type="text" class="opcao-input" placeholder="Digite a alternativa ${letra}..." /> <!-- input -->
+    <button class="btn-remove" onclick="removerOpcao(this)">X</button> <!-- botão remover -->
   `;
 
-  const radio = row.querySelector(".opcao-radio");
-  radio.addEventListener("change", () => {
-    document.querySelectorAll(".opcao-letra").forEach(l => {
-      l.style.borderColor = "";
-      l.style.color = "";
-      l.style.background = "";
-    });
-    if (radio.checked) {
-      const letraEl = row.querySelector(".opcao-letra");
-      letraEl.style.borderColor = "var(--accent)";
-      letraEl.style.color = "var(--accent)";
-      letraEl.style.background = "var(--accent-soft)";
-    }
-  });
-
-  container.appendChild(row);
-  atualizarCount();
+  container.appendChild(row); // adiciona no HTML
+  atualizarCount(); // atualiza contador
 }
 
+
+// remove uma opção
 function removerOpcao(btn) {
-  const row = btn.closest(".opcao-row");
-  row.style.opacity = "0";
-  row.style.transform = "translateX(20px)";
-  row.style.transition = ".2s ease";
-  setTimeout(() => { row.remove(); reordenarOpcoes(); }, 200);
+  btn.closest(".opcao-row").remove(); // remove a div da opção
+  reordenarOpcoes(); // reorganiza letras
 }
 
+
+// reorganiza as letras após remover
 function reordenarOpcoes() {
-  const rows = document.querySelectorAll(".opcao-row");
-  contador = rows.length;
+
+  const rows = document.querySelectorAll(".opcao-row"); // pega todas opções
+  contador = rows.length; // atualiza contador
+
   rows.forEach((row, i) => {
-    row.querySelector(".opcao-letra").textContent = LETRAS[i];
-    row.querySelector(".opcao-input").placeholder = `Digite a alternativa ${LETRAS[i]}...`;
+    row.querySelector(".opcao-letra").textContent = LETRAS[i]; // atualiza letra
+    row.querySelector(".opcao-input").placeholder = `Digite a alternativa ${LETRAS[i]}...`; // atualiza placeholder
   });
-  atualizarCount();
+
+  atualizarCount(); // atualiza contador
 }
 
+
+// ───────── FORM ─────────
+
+// limpa formulário após salvar
 function limparFormulario() {
-  document.getElementById("enunciado").value = "";
-  document.getElementById("opcoes-container").innerHTML = "";
-  contador = 0;
-  adicionarOpcao();
-  atualizarCount();
+  document.getElementById("enunciado").value = ""; // limpa enunciado
+  document.getElementById("opcoes-container").innerHTML = ""; // remove opções
+  contador = 0; // zera contador
+
+  adicionarOpcao(); // cria primeira opção automaticamente
+  atualizarCount(); // atualiza contador
 }
 
+
+// mostra mensagem na tela (toast)
 function mostrarToast(msg, cor) {
-  const t = document.getElementById("toast");
-  document.getElementById("toast-msg").textContent = msg;
-  t.style.borderColor = cor || "var(--accent)";
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+  const t = document.getElementById("toast"); // pega toast
+  document.getElementById("toast-msg").textContent = msg; // define mensagem
+  t.style.borderColor = cor || "var(--accent)"; // define cor
+  t.classList.add("show"); // mostra toast
+
+  setTimeout(() => t.classList.remove("show"), 3000); // esconde após 3s
 }
 
-function salvarQuestao() {
-  const enunciado = document.getElementById("enunciado").value.trim();
-  const opcoes = [...document.querySelectorAll(".opcao-input")].map(i => i.value.trim());
-  const corretaEl = document.querySelector(".opcao-radio:checked");
+function finalizarAtividade() {
 
-  if (!enunciado) { mostrarToast("⚠ Preencha o enunciado!", "#ff4466"); return; }
-  if (opcoes.length < 2) { mostrarToast("⚠ Adicione pelo menos 2 alternativas!", "#ff4466"); return; }
-  if (!corretaEl) { mostrarToast("⚠ Selecione a alternativa correta!", "#ff4466"); return; }
-
-  const corretaIndex = [...document.querySelectorAll(".opcao-radio")].indexOf(corretaEl);
-
-  questoesSalvas.push({
-    numero: questaoAtual,
-    enunciado,
-    opcoes,
-    correta: LETRAS[corretaIndex]
-  });
-
-  if (questaoAtual === totalQuestoes) {
-    mostrarToast("✓ Atividade finalizada com sucesso!");
-    console.log("Questões salvas:", questoesSalvas);
-    // aqui você envia pro banco: fetch('/api/salvar', { method: 'POST', body: JSON.stringify(questoesSalvas) })
+  // verifica se já criou a atividade
+  if (!atividadeId) {
+    mostrarToast("Crie pelo menos uma questão antes!", "#ff4466"); // erro
     return;
   }
 
-  mostrarToast(`✓ Questão ${questaoAtual} salva!`);
-  questaoAtual++;
-  atualizarQuestaoHeader();
-  limparFormulario();
+  // aqui você pode depois mandar tudo pro banco (se quiser)
+  console.log("Atividade finalizada com ID:", atividadeId); // debug
+
+  const dataCriacao = new Date(); // pega data e hora atual do sistema
+
+  mostrarToast("✓ Atividade finalizada com sucesso!"); // sucesso
+
+  // opcional: resetar tudo
+  atividadeId = null; // limpa ID
+  questaoAtual = 1; // volta pra questão 1
+  atualizarQuestaoHeader(); // atualiza header
+  limparFormulario(); // limpa inputs
 }
 
-// Inicializa
+
+// ───────── SALVAR ─────────
+
+// função chamada ao clicar no botão salvar
+function salvarQuestao() { // função principal chamada ao clicar no botão salvar
+
+  const titulo = document.getElementById("titulo").value; // pega o valor digitado no input de título
+  const enunciado = document.getElementById("enunciado").value.trim(); // pega o enunciado e remove espaços extras
+
+  const opcoes = [...document.querySelectorAll(".opcao-input")].map(i => i.value.trim()); // pega todas as alternativas digitadas
+  const corretaEl = document.querySelector(".opcao-radio:checked"); // pega a opção marcada como correta
+
+  // ─── VALIDAÇÕES ───
+
+  if (!titulo) { // verifica se o título está vazio
+    mostrarToast("Digite o título!", "#ff4466"); // mostra mensagem de erro
+    return; // interrompe execução
+  }
+
+  if (!enunciado) { // verifica se o enunciado está vazio
+    mostrarToast("Digite o enunciado!", "#ff4466"); // mostra erro
+    return; // para função
+  }
+
+  if (opcoes.length < 2) { // verifica se tem menos de 2 alternativas
+    mostrarToast("Adicione pelo menos 2 opções!", "#ff4466"); // erro
+    return;
+  }
+
+  if (!corretaEl) { // verifica se nenhuma alternativa foi marcada como correta
+    mostrarToast("Selecione a correta!", "#ff4466"); // erro
+    return;
+  }
+
+  // ─── CRIA ATIVIDADE (SÓ NA PRIMEIRA VEZ) ───
+
+  if (!atividadeId) { // se ainda não existe atividade criada
+
+    const dataCriacao = new Date().toISOString(); // pega data atual no formato certo
+
+    fetch("http://localhost:8080/atividades", { // chama API do backend
+      method: "POST", // método POST = criar registro
+      headers: {
+        "Content-Type": "application/json" // informa que estamos enviando JSON
+      },
+      body: JSON.stringify({ // converte objeto JS para JSON
+        titulo: titulo, // envia o título digitado
+        pontuacaoMaxima: 10, // valor fixo por enquanto
+        idOrientador: 6, // 👈 usa um ID que já existe no banco
+        dataCriacao: dataCriacao // 👈 AGORA VAI PRO BANCO
+      })
+    })
+
+    .then(res => res.json()) // transforma resposta do servidor em JSON
+
+    .then(atividade => { // recebe a atividade criada
+
+      atividadeId = atividade.idAtividade; // salva o ID da atividade numa variável global
+
+      criarPergunta(enunciado); // chama função que salva a pergunta
+
+    })
+
+    .catch(err => { // se der erro ao criar atividade
+      console.error("Erro ao criar atividade:", err); // mostra erro no console
+    });
+
+  } else { // se a atividade já existe
+
+    criarPergunta(enunciado); // só cria a pergunta (não recria atividade)
+
+  }
+}
+
+function criarPergunta(enunciado) {
+
+  fetch("http://localhost:8080/atividadesPergunta", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      enunciado: enunciado,
+      atividade: {
+        idAtividade: atividadeId
+      }
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log("Pergunta salva:", data);
+
+    mostrarToast(`Questão ${questaoAtual} salva!`);
+
+    if (questaoAtual < totalQuestoes) {
+      questaoAtual++;
+      atualizarQuestaoHeader();
+      limparFormulario();
+    } else {
+      mostrarToast("Atividade finalizada!");
+    }
+  })
+  .catch(err => {
+    console.error("Erro pergunta:", err);
+    mostrarToast("Erro ao salvar pergunta!", "#ff4466");
+  });
+}
+
+
+// ───────── INIT ─────────
+
+// cria primeira opção ao abrir a página
 adicionarOpcao();
+
+// inicializa header da questão
 atualizarQuestaoHeader();
