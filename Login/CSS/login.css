@@ -1,0 +1,683 @@
+@import url('https://fonts.googleapis.com/css2?family=Chunk+Five&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montaser+Arabic&display=swap');
+
+
+:root {
+  --primary-color: #BB86FC;     /* roxo neon claro */
+  --secondary-color: #a21fa2;   /* roxo vibrante */
+  --dark-bg: #0a0e27;           /* fundo muito escuro */
+  --card-bg: rgba(15, 20, 40, 0.7);  /* card com transparência */
+  --text-primary: #ffffff;      /* texto branco */
+  --text-secondary: #b0b0c0;    /* texto cinza claro */
+  --border-color: rgba(187, 134, 252, 0.2);
+  --glow-color: #BB86FC;
+  --glow-color-secondary: #a21fa2;
+}
+
+/* ============================================
+ RESET E ESTILOS GLOBAIS
+ ============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+}
+
+/* ============================================
+ FUNDO ANIMADO
+ ============================================ */
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.gradient-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a0f3d 50%, #0a0e27 100%);
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+      background: linear-gradient(135deg, #0a0e27 0%, #1a0f3d 50%, #0a0e27 100%);
+  }
+  50% {
+      background: linear-gradient(135deg, #1a0f3d 0%, #2d1b4e 50%, #1a0f3d 100%);
+  }
+}
+
+/* Canvas para partículas */
+#particleCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Linhas animadas no fundo */
+.animated-lines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+      linear-gradient(90deg, transparent 0%, rgba(187, 134, 252, 0.05) 50%, transparent 100%),
+      linear-gradient(0deg, transparent 0%, rgba(162, 31, 162, 0.03) 50%, transparent 100%);
+  background-size: 200% 200%, 200% 200%;
+  animation: linesMove 20s linear infinite;
+}
+
+@keyframes linesMove {
+  0% {
+      background-position: 0% 0%, 0% 0%;
+  }
+  100% {
+      background-position: 100% 100%, 100% 100%;
+  }
+}
+
+/* ============================================
+ CONTAINER PRINCIPAL
+ ============================================ */
+.login-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 20px;
+}
+
+/* ============================================
+ CARD DE LOGIN (GLASSMORPHISM)
+ ============================================ */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 50px 40px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 0 25px rgba(187, 134, 252, 0.15),
+  inset 0 0 20px rgba(187, 134, 252, 0.05);
+transition: box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-card:hover {
+  box-shadow: 0 0 35px rgba(187, 134, 252, 0.25),
+              inset 0 0 25px rgba(187, 134, 252, 0.08);
+}
+
+@keyframes cardFadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+  }
+}
+
+/* Efeito de brilho no card */
+.login-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(187, 134, 252, 0.1) 0%, transparent 70%);
+  animation: cardGlow 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+
+
+
+@keyframes cardGlow {
+  0%, 100% {
+      transform: translate(0, 0);
+  }
+  50% {
+      transform: translate(-20px, -20px);
+  }
+}
+
+/* ============================================
+ LOGO DO ESTUDEX
+ ============================================ */
+
+ .logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  animation: logoFloat 3s ease-in-out infinite;
+  gap: 10px; /* espaço entre mascote e texto */
+}
+
+/* Mascote (ornitorrinco) */
+.mascot-image {
+  width: 90px; /* tamanho proporcional ao texto */
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px rgba(187, 134, 252, 0.3));
+  transition: transform 0.3s ease;
+}
+
+.mascot-image:hover {
+  transform: scale(1.05);
+}
+
+/* Container do texto ESTUDEX */
+.logo-estudex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* Texto "ESTUDE" */
+.logo-estude {
+  font-family: "Chunk Five", serif;
+  font-size: 2.6rem;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+}
+
+/* Letra "X" roxa neon */
+.logo-x {
+  font-family: "Montaser Arabic", sans-serif;
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--primary-color);
+}
+
+/* Animação de flutuação */
+@keyframes logoFloat {
+  0%, 100% {
+      transform: translateY(0px);
+  }
+  50% {
+      transform: translateY(-6px);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .mascot-image {
+    width: 70px;
+  }
+
+  .logo-estude {
+    font-size: 2rem;
+  }
+
+  .logo-x {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mascot-image {
+    width: 60px;
+  }
+
+  .logo-estude {
+    font-size: 1.8rem;
+  }
+
+  .logo-x {
+    font-size: 2.2rem;
+  }
+}
+
+
+
+@keyframes logoFloat {
+  0%, 100% {
+      transform: translateY(0px);
+  }
+  50% {
+      transform: translateY(-10px);
+  }
+}
+
+.mascot-image {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 15px rgba(187, 134, 252, 0.3));
+}
+
+/* ============================================
+ TÍTULOS E TEXTOS
+ ============================================ */
+.login-title {
+  font-size: 42px;
+  font-weight: 800;
+  text-align: center;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  min-height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+
+.title-estude {
+  color: var(--text-primary);
+  animation: fadeInLeft 0.8s ease-out;
+}
+
+.title-x {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: fadeInRight 0.8s ease-out 0.2s both;
+}
+
+@keyframes fadeInLeft {
+  from {
+      opacity: 0;
+      transform: translateX(-20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+      opacity: 0;
+      transform: translateX(20px);
+  }
+  to {
+      opacity: 1;
+      transform: translateX(0);
+  }
+}
+
+.login-subtitle {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 40px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================
+ FORMULÁRIO
+ ============================================ */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* ============================================
+ INPUTS COM EFEITO NEON
+ ============================================ */
+.input-wrapper {
+  position: relative;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+}
+
+.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+.form-label {
+  color: #d2b8ff;
+}
+
+
+
+
+/* Efeito ao focar no input */
+.form-input:focus {
+  outline: none;
+  background: rgba(187, 134, 252, 0.08);
+  border-color: var(--primary-color);
+  box-shadow: 
+      0 0 15px rgba(187, 134, 252, 0.3),
+      inset 0 0 15px rgba(187, 134, 252, 0.05);
+}
+
+/* Glow animado do input */
+.input-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  background: radial-gradient(ellipse at center, rgba(187, 134, 252, 0.2) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.form-input:focus ~ .input-glow {
+  opacity: 1;
+  animation: inputGlowPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes inputGlowPulse {
+  0%, 100% {
+      box-shadow: 0 0 10px rgba(187, 134, 252, 0.3);
+  }
+  50% {
+      box-shadow: 0 0 20px rgba(187, 134, 252, 0.5);
+  }
+}
+
+/* ============================================
+ BOTÃO DE LOGIN
+ ============================================ */
+.login-button {
+  width: 100%;
+  padding: 14px 20px;
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+      0 0 20px rgba(187, 134, 252, 0.4),
+      0 0 40px rgba(187, 134, 252, 0.2);
+  margin-top: 10px;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+      0 0 30px rgba(187, 134, 252, 0.6),
+      0 0 60px rgba(187, 134, 252, 0.3);
+}
+
+.login-button:active {
+  transform: translateY(0);
+}
+
+/* Animação de pulso no botão */
+.login-button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-button:hover::before {
+  animation: buttonPulse 0.6s ease-out;
+}
+
+@keyframes buttonPulse {
+  0% {
+      width: 0;
+      height: 0;
+      opacity: 1;
+  }
+  100% {
+      width: 300px;
+      height: 300px;
+      opacity: 0;
+  }
+}
+
+/* Glow animado do botão */
+.button-glow {
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+  animation: buttonGlow 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes buttonGlow {
+  0%, 100% {
+      transform: translate(0, 0);
+  }
+  50% {
+      transform: translate(-10px, -10px);
+  }
+}
+
+.button-text {
+  position: relative;
+  z-index: 2;
+}
+
+/* ============================================
+ LINKS ADICIONAIS
+ ============================================ */
+.login-links {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  position: relative;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  transition: width 0.3s ease;
+}
+
+.link:hover {
+  color: var(--primary-color);
+}
+
+.link:hover::after {
+  width: 100%;
+}
+
+.link-separator {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+/* ============================================
+ RESPONSIVIDADE
+ ============================================ */
+@media (max-width: 768px) {
+  .login-card {
+      padding: 40px 30px;
+      max-width: 90%;
+  }
+
+  .login-title {
+      font-size: 28px;
+  }
+
+  .form-input {
+      padding: 12px 14px;
+      font-size: 13px;
+  }
+
+  .login-button {
+      padding: 12px 16px;
+      font-size: 14px;
+  }
+
+  .logo-box {
+      width: 70px;
+      height: 70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+      padding: 30px 20px;
+      border-radius: 15px;
+  }
+
+  .login-title {
+      font-size: 24px;
+  }
+
+  .login-subtitle {
+      font-size: 12px;
+  }
+
+  .form-label {
+      font-size: 12px;
+  }
+
+  .form-input {
+      padding: 11px 12px;
+      font-size: 12px;
+  }
+
+  .login-button {
+      padding: 11px 14px;
+      font-size: 12px;
+      letter-spacing: 1px;
+  }
+
+  .logo-box {
+      width: 60px;
+      height: 60px;
+  }
+
+  .login-links {
+      font-size: 12px;
+      gap: 8px;
+  }
+}
+
+/* ============================================
+ ANIMAÇÃO DE CARREGAMENTO (para quando clicar no botão)
+ ============================================ */
+.login-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.login-button.loading .button-text {
+  animation: loadingPulse 1s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% {
+      opacity: 1;
+  }
+  50% {
+      opacity: 0.5;
+  }
+}
+
+/* ============================================
+ ANIMAÇÃO DE SUCESSO
+ ============================================ */
+.login-button.success {
+  background: linear-gradient(135deg, #00d084, #00b366);
+  box-shadow: 
+      0 0 20px rgba(0, 208, 132, 0.4),
+      0 0 40px rgba(0, 208, 132, 0.2);
+}
+
+.login-button.success::after {
+  content: '✓';
+  position: absolute;
+  right: 15px;
+  animation: successCheck 0.5s ease-out;
+}
+
+@keyframes successCheck {
+  from {
+      opacity: 0;
+      transform: scale(0);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}

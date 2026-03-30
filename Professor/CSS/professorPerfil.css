@@ -30,6 +30,11 @@ body {
 }
 
 /* ========== DASHBOARD LAYOUT ========== */
+/* ========== CORRIGE O LAYOUT PRINCIPAL ========== */
+.professor-dashboard {
+  display: flex;
+  min-height: 100vh;
+}
 /* ========== SIDEBAR PROFESSOR ========== */
 .professor-sidebar {
     width: 250px;
@@ -45,8 +50,8 @@ body {
     z-index: 100;
 }
 
-.professor-sidebar.collapsed {
-    width: 80px;
+.professor-sidebar.collapsed ~ .professor-content {
+  width: calc(100% - 80px);
 }
 
 .professor-sidebar.collapsed .logo-text,
@@ -226,10 +231,10 @@ body {
 /* ========== CONTEÚDO PRINCIPAL ========== */
 .professor-content {
   flex: 1;
-  margin-left: 280px;
+  margin-left: 0;        /* remove o margin-left fixo */
+  width: calc(100% - 250px);
   padding: 30px;
   min-height: 100vh;
-  width: calc(100% - 280px);
 }
 
 /* ========== CABEÇALHO ========== */

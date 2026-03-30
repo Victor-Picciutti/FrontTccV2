@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstudeX - Login Futurista</title>
+    <link rel="stylesheet" href="../CSS/login.css">
+</head>
+<body>
+        <!-- Botões de acesso rápido (dev) -->
+<div style="position: fixed; top: 16px; right: 16px; z-index: 999; display: flex; gap: 8px;">
+    <a href="../../Home/HTML/home-Estudex.html" style="
+        background: rgba(0, 200, 100, 0.15);
+        border: 1px solid rgba(0, 200, 100, 0.4);
+        color: #00c864;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    " onmouseover="this.style.background='rgba(0,200,100,0.28)'" 
+       onmouseout="this.style.background='rgba(0,200,100,0.15)'">
+        Aluno
+    </a>
+    <a href="../../Professor/HTML/professorPerfil.html" style="
+        background: rgba(255, 70, 70, 0.15);
+        border: 1px solid rgba(255, 70, 70, 0.4);
+        color: #ff4646;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        backdrop-filter: blur(8px);
+        transition: all 0.2s ease;
+    " onmouseover="this.style.background='rgba(255,70,70,0.28)'"
+       onmouseout="this.style.background='rgba(255,70,70,0.15)'">
+        Professor
+    </a>
+</div>
+    <!-- Fundo animado com partículas e gradiente -->
+    <div class="background-container">
+        <div class="gradient-bg"></div>
+        <canvas id="particleCanvas"></canvas>
+        <div class="animated-lines"></div>
+    </div>
+
+    <!-- Container principal -->
+    <div class="login-container">
+        
+        <div class="login-card">
+            <!-- Logo do EstudeX (Mascote) -->
+            <div class="logo-container">
+                <img src="../../image/logopng.png" alt="EstudeX Mascot" class="mascot-image">
+            </div>
+
+            <!-- Título com split color (ESTUDE branco + X roxo) -->
+
+            <div class="logo-estudex">
+                <span class="logo-estude">ESTUDE</span><span class="logo-x">X</span>
+            </div>
+            
+            
+            <!-- Formulário de login -->
+            <form class="login-form" id="loginForm">
+                <!-- Campo de e-mail -->
+                <div class="form-group">
+                    <label for="email" class="form-label">E-mail</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-input" 
+                            placeholder="seu@email.com"
+                            required
+                        >
+                        <div class="input-glow"></div>
+                    </div>
+                </div>
+
+                <!-- Campo de senha -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Senha</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-input" 
+                            placeholder="••••••••"
+                            required
+                        >
+                        <div class="input-glow"></div>
+                    </div>
+                </div>
+
+                <!-- Botão de login -->
+                <button type="submit" class="login-button" id="loginBtn">
+                    <span class="button-text">Entrar</span>
+                    <div class="button-glow"></div>
+                </button>
+            </form>
+
+            <!-- Links adicionais -->
+            <div class="login-links">
+                <a href="#" class="link forgot-password">Esqueci minha senha</a>
+                <span class="link-separator">•</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../JS/login.js"></script>
+</body>
+</html>
