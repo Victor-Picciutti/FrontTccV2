@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstudeX | Dúvidas dos Alunos</title>
+    <link rel="stylesheet" href="../CSS/duvidas.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../CSS/themes.css">
+</head>
+<body>
+
+    <section class="user-dashboard">
+
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-bars menu-icon" id="menu-toggle"></i>
+                <span class="logo-text">EstudeX</span>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="../../../Home/HTML/home-Estudex.html" class="nav-item"><i class="fas fa-home"></i> <span>Home</span></a></li>
+                    <li><a href="../../perfil/HTML/perfil-Estudex.html" class="nav-item"><i class="fas fa-user"></i> <span>Perfil</span></a></li>
+                    <li><a href="../../duvidas/HTML/duvidas-Estudex.html" class="nav-item active"><i class="fas fa-question-circle"></i> <span>Dúvidas</span></a></li>
+                    <li><a href="../../atividade/HTML/atividades-Estudex.html" class="nav-item"><i class="fas fa-tasks"></i> <span>Atividades</span></a></li>
+                    <li><a href="../../desempenho/HTML/desempenho-Estudex.html" class="nav-item"><i class="fas fa-chart-line"></i> <span>Desempenho</span></a></li>
+                    <li><a href="../../enem/HTML/enem.html" class="nav-item"><i class="fas fa-book"></i> <span>Enem</span></a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <main class="dashboard-content">
+
+            <!-- CABEÇALHO -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">Dúvidas dos Alunos</h1>
+                    <p class="page-subtitle">Gerencie e responda as dúvidas enviadas pelos alunos</p>
+                </div>
+                <div class="header-stats">
+                    <div class="hstat">
+                        <span class="hstat-num" id="cnt-total">—</span>
+                        <span class="hstat-label">Total</span>
+                    </div>
+                    <div class="hstat hstat-pending">
+                        <span class="hstat-num" id="cnt-pending">—</span>
+                        <span class="hstat-label">Pendentes</span>
+                    </div>
+                    <div class="hstat hstat-answered">
+                        <span class="hstat-num" id="cnt-answered">—</span>
+                        <span class="hstat-label">Respondidas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOOLBAR -->
+            <div class="data-card toolbar-card">
+                <div class="toolbar">
+                    <div class="search-group">
+                        <div class="search-field">
+                            <i class="fas fa-hashtag search-icon"></i>
+                            <input type="text" id="search-id" placeholder="Pesquisar por ID...">
+                        </div>
+                        <div class="search-field">
+                            <i class="fas fa-user search-icon"></i>
+                            <input type="text" id="search-name" placeholder="Pesquisar por nome do aluno...">
+                        </div>
+                        <button class="btn-clear" id="btn-clear">
+                            <i class="fas fa-times"></i> Limpar
+                        </button>
+                    </div>
+                    <div class="filter-group">
+                        <button class="filter-btn active" data-filter="all">Todas</button>
+                        <button class="filter-btn" data-filter="Aberta">Pendentes</button>
+                        <button class="filter-btn" data-filter="Respondida">Respondidas</button>
+                        <select class="filter-select" id="filter-subject">
+                            <option value="all">Todas as matérias</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TABELA -->
+            <div class="data-card table-card">
+                <div class="table-header-row">
+                    <h2 class="card-title"><i class="fas fa-list"></i> Listagem de Dúvidas</h2>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                        <button class="btn-refresh" id="btn-refresh" title="Recarregar dados">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <span class="results-count" id="results-count">—</span>
+                    </div>
+                </div>
+
+                <!-- Loading -->
+                <div class="loading-state" id="loading-state">
+                    <div class="spinner"></div>
+                    <p>Carregando dúvidas...</p>
+                </div>
+
+                <!-- Erro -->
+                <div class="error-state" id="error-state" style="display:none;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p id="error-msg">Não foi possível conectar à API.</p>
+                    <button class="btn-action" id="btn-retry"><i class="fas fa-redo"></i> Tentar novamente</button>
+                </div>
+
+                <!-- Tabela -->
+                <div class="table-wrapper" id="table-wrapper" style="display:none;">
+                    <table class="doubts-table">
+                        <thead>
+                            <tr>
+                                <th class="col-id sortable" data-col="idDuvida">ID <i class="fas fa-sort sort-icon"></i></th>
+                                <th class="col-aluno sortable" data-col="nomeAluno">Aluno <i class="fas fa-sort sort-icon"></i></th>
+                                <th class="col-titulo">Título da Dúvida</th>
+                                <th class="col-materia sortable" data-col="disciplina">Matéria <i class="fas fa-sort sort-icon"></i></th>
+                                <th class="col-data sortable" data-col="momento">Data <i class="fas fa-sort sort-icon"></i></th>
+                                <th class="col-status">Status</th>
+                                <th class="col-acoes">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- Vazio -->
+                <div class="list-empty" id="empty-state" style="display:none;">
+                    <i class="fas fa-search"></i>
+                    <p>Nenhuma dúvida encontrada para os filtros aplicados.</p>
+                </div>
+            </div>
+
+        </main>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <div class="modal-header-info">
+                    <span class="modal-id" id="modal-id">#000</span>
+                    <h3 class="modal-title" id="modal-title"></h3>
+                </div>
+                <button class="modal-close" id="modal-close"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="modal-student-row">
+                    <div class="student-avatar" id="modal-avatar"></div>
+                    <div class="modal-student-info">
+                        <p class="modal-student-name" id="modal-student"></p>
+                        <p class="modal-meta-info" id="modal-meta"></p>
+                    </div>
+                    <span class="badge" id="modal-badge"></span>
+                </div>
+
+                <div class="modal-section">
+                    <div class="section-label"><i class="fas fa-question-circle"></i> Dúvida do aluno</div>
+                    <div class="modal-text" id="modal-description"></div>
+                </div>
+
+                <!-- Resposta já enviada -->
+                <div class="modal-section" id="answer-display" style="display:none;">
+                    <div class="section-label answered-label"><i class="fas fa-check-circle"></i> Resposta enviada</div>
+                    <div class="modal-text answer-text" id="modal-answer-text"></div>
+                    <p class="answer-date" id="modal-answer-date"></p>
+                </div>
+
+                <!-- Formulário de resposta -->
+                <div class="modal-section" id="answer-form-section">
+                    <div class="section-label reply-label"><i class="fas fa-reply"></i> Responder dúvida</div>
+                    <textarea id="answer-input" rows="5" placeholder="Digite sua resposta aqui... (Ctrl+Enter para enviar)"></textarea>
+                    <div class="modal-actions">
+                        <button class="btn-secondary" id="btn-cancel">Cancelar</button>
+                        <button class="btn-primary" id="btn-send-answer">
+                            <span id="btn-send-text">Enviar Resposta</span>
+                            <i class="fas fa-paper-plane" id="btn-send-icon"></i>
+                            <div class="btn-spinner" id="btn-spinner" style="display:none;"></div>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" id="toast-icon"></i>
+        <span id="toast-msg">Resposta enviada com sucesso!</span>
+    </div>
+
+    <script src="../JS/duvidas.js"></script>
+    <script src="../JS/themes.js"></script>
+
+</body>
+</html>
