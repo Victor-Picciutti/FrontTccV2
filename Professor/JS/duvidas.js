@@ -171,7 +171,7 @@ async function enviarResposta(idDuvida, textoResposta) {
         // mantém só a duvida (se seu backend usa)
         duvida: { idDuvida: idDuvida }
     };
-
+''
     const res = await fetch(`${API.BASE_URL}${API.RESPOSTAS}`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -184,6 +184,18 @@ async function enviarResposta(idDuvida, textoResposta) {
     }
 
     return await res.json();
+}
+
+async function validarResposta()
+{
+    if(ConteudoResposta != null)
+        {
+            duvida.statusDuvida = "Respondida"
+        }
+    else
+        {
+            duvida.statusDuvida = "Pendente"
+        }
 }
 
 // =====================================================
