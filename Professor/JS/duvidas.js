@@ -46,7 +46,6 @@ const filterBtns      = document.querySelectorAll('.filter-btn');
 const filterSelect    = document.getElementById('filter-subject');
 const modalOverlay    = document.getElementById('modal-overlay');
 const modalClose      = document.getElementById('modal-close');
-const btnSendAnswer   = document.getElementById('btn-send-answer');
 const btnCancel       = document.getElementById('btn-cancel');
 const answerInput     = document.getElementById('answer-input');
 const menuToggle      = document.getElementById('menu-toggle');
@@ -136,73 +135,6 @@ async function fetchDados() {
     }
 }
 
-/**
- * Envia a resposta do professor para POST /respostas
- * e atualiza StatusDuvida via PATCH /duvidas/{id} se disponível.
- */
-/* async function enviarResposta(idDuvida, textoResposta) {
-    // Payload conforme TBL_RESPOSTADUVIDA
-    const payload = {
-        idDuvida:          idDuvida,
-        idUtilizador:      ID_PROFESSOR_LOGADO,
-        momento:           new Date().toISOString(),
-        conteudoResposta:  textoResposta,
-
-        // Alguns JPA mapeiam como objeto aninhado — enviamos os dois formatos
-        // para cobrir qualquer configuração de serialização
-        duvida:      { idDuvida: idDuvida },
-        utilizador:  { idUtilizador: ID_PROFESSOR_LOGADO },
-    };
-
-    const res = await fetch(`${API.BASE_URL}${API.RESPOSTAS}`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-        const corpo = await res.text();
-        throw new Error(`Status ${res.status}: ${corpo}`);
-    }
-
-    return await res.json();
-}*/
-
-async function enviarResposta(idDuvida, textoResposta) {
-    const payload = {
-        idDuvida:         idDuvida,
-        momento:          new Date().toISOString(),
-        conteudoResposta: textoResposta,
-
-        // mantém só a duvida (se seu backend usa)
-        duvida: { idDuvida: idDuvida }
-    };
-''
-    const res = await fetch(`${API.BASE_URL}${API.RESPOSTAS}`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-        const corpo = await res.text();
-        throw new Error(`Status ${res.status}: ${corpo}`);
-    }
-
-    return await res.json();
-}
-
-async function validarResposta()
-{
-    if(ConteudoResposta != null)
-        {
-            duvida.statusDuvida = "Respondida"
-        }
-    else
-        {
-            duvida.statusDuvida = "Pendente"
-        }
-}
 
 // =====================================================
 // RENDERIZAÇÃO
@@ -365,51 +297,6 @@ function fecharModal() {
     activeDoubtId = null;
 }
 
-async function confirmarResposta() {
-    const texto = answerInput.value.trim();
-    if (!texto) {
-        answerInput.classList.add('error');
-        answerInput.focus();
-        setTimeout(() => answerInput.classList.remove('error'), 1500);
-        return;
-    }
-
-    // UI: estado de carregamento no botão
-    btnSendAnswer.disabled = true;
-    document.getElementById('btn-send-text').textContent = 'Enviando...';
-    document.getElementById('btn-send-icon').style.display   = 'none';
-    document.getElementById('btn-spinner').style.display     = 'block';
-
-    try {
-        await enviarResposta(activeDoubtId, texto);
-
-        // Atualiza localmente sem precisar recarregar tudo
-        const idx = doubtsData.findIndex(d => d.idDuvida === activeDoubtId);
-        if (idx !== -1) {
-            doubtsData[idx].statusDuvida = 'Respondida';
-            doubtsData[idx].resposta     = {
-                conteudo: texto,
-                momento:  new Date().toISOString(),
-                //idProf:   null,
-            };
-        }
-
-        fecharModal();
-        renderTabela();
-        atualizarStats();
-        showToast('Resposta enviada com sucesso!', 'success');
-
-    } catch (err) {
-        console.error('[EstudeX] Erro ao enviar resposta:', err);
-        showToast(`Erro ao enviar resposta. ${err.message}`, 'error');
-    } finally {
-        // Restaura botão
-        btnSendAnswer.disabled = false;
-        document.getElementById('btn-send-text').textContent = 'Enviar Resposta';
-        document.getElementById('btn-send-icon').style.display   = 'inline';
-        document.getElementById('btn-spinner').style.display     = 'none';
-    }
-}
 
 // =====================================================
 // EVENTOS
@@ -477,12 +364,6 @@ modalClose.addEventListener('click', fecharModal);
 btnCancel.addEventListener('click', fecharModal);
 modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) fecharModal(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharModal(); });
-
-// Modal: enviar resposta
-btnSendAnswer.addEventListener('click', confirmarResposta);
-answerInput.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) confirmarResposta();
-});
 
 // Sidebar toggle
 menuToggle?.addEventListener('click', () => {
