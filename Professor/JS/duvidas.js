@@ -81,42 +81,48 @@ async function fetchDados() {
 
         // Monta mapa de respostas: { idDuvida -> resposta }
         const mapaRespostas = {};
-        respostas.forEach(r => {
-            // A chave da TBL_RESPOSTADUVIDA pode vir como idDuvida ou duvida.idDuvida
-            // dependendo de como o JPA/Hibernate serializa a entidade
-            const chave = r.idDuvida ?? r.duvida?.idDuvida ?? r.id;
-            if (chave != null) mapaRespostas[chave] = r;
+            respostas.forEach(r => {
+                // ✅ idDuvida é a PK da tabela — Jackson serializa direto
+                const chave = r.idDuvida ?? r.duvida?.idDuvida;
+                if (chave != null) mapaRespostas[chave] = r;
         });
 
         // Enriquece cada dúvida com os dados da resposta (se existir)
         doubtsData = duvidas.map(d => {
-            const resposta = mapaRespostas[d.idDuvida] ?? null;
-            return {
-                // Campos da dúvida
-                idDuvida:       d.idDuvida,
-                titulo:         d.titulo        ?? d.Titulo        ?? '(sem título)',
-                descricao:      d.descricao     ?? d.Descricao     ?? '',
-                statusDuvida:   d.statusDuvida  ?? d.StatusDuvida  ?? 'Aberta',
-                momento:        d.momento       ?? d.Momento       ?? null,
+    const resposta = mapaRespostas[d.idDuvida] ?? null;
+    return {
+            idDuvida:     d.idDuvida,
+            titulo:       d.titulo    ?? d.Titulo    ?? '(sem título)',
+            descricao:    d.descricao ?? d.Descricao ?? '',
+            statusDuvida: d.statusDuvida ?? d.StatusDuvida ?? 'Aberta',
+            momento:      d.momento   ?? d.Momento   ?? null,
 
-                // Aluno — dependendo da serialização pode vir aninhado ou flat
-                idAluno:        d.idUtilizador  ?? d.utilizador?.idUtilizador ?? null,
-                nomeAluno:      d.utilizador?.nome ?? d.utilizador?.Nome ?? d.nomeAluno ?? 'Aluno',
+        // ✅ CORRIGIDO: Hibernate serializa "utilizador" como objeto aninhado
+            idAluno:   d.utilizador?.idUtilizador ?? null,
+            nomeAluno: d.utilizador?.nome         // <- minúsculo (padrão Jackson)
+                ?? d.utilizador?.Nome
+                ?? d.nomeAluno
+                ?? 'Aluno',
 
-                // Conteúdo/Disciplina — pode vir aninhado
-                disciplina:     d.conteudo?.disciplina?.nome
-                             ?? d.conteudo?.disciplina?.Nome
-                             ?? d.disciplina
-                             ?? '—',
+            // ✅ CORRIGIDO: conteudo -> disciplina -> nome
+            disciplina: d.conteudo?.disciplina?.nome
+                 ?? d.conteudo?.disciplina?.Nome
+                 ?? d.disciplina
+                 ?? '—',
 
-                // Resposta cruzada
-                resposta: resposta ? {
-                    conteudo:   resposta.conteudoResposta ?? resposta.ConteudoResposta ?? '',
-                    momento:    resposta.momento          ?? resposta.Momento          ?? null,
-                    idProf:     resposta.idUtilizador     ?? resposta.utilizador?.idUtilizador ?? null,
-                } : null,
-            };
-        });
+            // ✅ CORRIGIDO: resposta vem de TBL_RESPOSTADUVIDA
+            // A PK é idDuvida — mapa já está correto, mas os campos precisam bater
+            resposta: resposta ? {
+                conteudo: resposta.conteudoResposta  // <- camelCase do Jackson
+                   ?? resposta.ConteudoResposta
+                   ?? '',
+                momento:  resposta.momento ?? resposta.Momento ?? null,
+                idProf:   resposta.idUtilizador
+                   ?? resposta.utilizador?.idUtilizador
+                   ?? null,
+            } : null,
+        };
+    });
 
         popularFiltroMateria();
         renderTabela();
